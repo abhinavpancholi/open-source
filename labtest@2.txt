@@ -1,0 +1,419 @@
+0 1 knapsack
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+int max(int a, int b) { return (a > b) ? a : b; }
+
+
+int knapSack(int W, int wt[], int val[], int n)
+{
+
+
+if (n == 0 || W == 0)
+return 0;
+
+
+if (wt[n - 1] > W)
+return knapSack(W, wt, val, n - 1);
+
+else
+return max(
+val[n - 1]
++ knapSack(W - wt[n - 1], wt, val, n - 1),
+knapSack(W, wt, val, n - 1));
+}
+
+
+int main()
+{
+int profit[] = { 60, 100, 120 };
+int weight[] = { 10, 20, 30 };
+int W = 50;
+int n = sizeof(profit) / sizeof(profit[0]);
+cout << knapSack(W, weight, profit, n);
+return 0;
+}
+
+
+
+matrix multiplication
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int MatrixChainOrder(int p[], int i, int j)
+{
+if (i == j)
+return 0;
+int k;
+int mini = INT_MAX;
+int count;
+
+for (k = i; k < j; k++)
+{
+count = MatrixChainOrder(p, i, k)
++ MatrixChainOrder(p, k + 1, j)
++ p[i - 1] * p[k] * p[j];
+
+mini = min(count, mini);
+}
+
+
+return mini;
+}
+
+
+int main()
+{
+int arr[] = { 1, 2, 3, 4, 3 };
+int N = sizeof(arr) / sizeof(arr[0]);
+
+
+cout << "Minimum number of multiplications is "
+<< MatrixChainOrder(arr, 1, N - 1);
+return 0;
+}
+
+
+
+Floyd Warshall Algorithm
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+#define V 4
+
+
+#define INF 99999
+
+void printSolution(int dist[][V]);
+
+
+void floydWarshall(int dist[][V])
+{
+
+int i, j, k;
+
+
+for (k = 0; k < V; k++) {
+
+for (i = 0; i < V; i++) {
+
+for (j = 0; j < V; j++) {
+
+if (dist[i][j] > (dist[i][k] + dist[k][j])
+&& (dist[k][j] != INF
+&& dist[i][k] != INF))
+dist[i][j] = dist[i][k] + dist[k][j];
+}
+}
+}
+
+
+printSolution(dist);
+}
+
+void printSolution(int dist[][V])
+{
+cout << "The following matrix shows the shortest "
+"distances"
+" between every pair of vertices \n";
+for (int i = 0; i < V; i++) {
+for (int j = 0; j < V; j++) {
+if (dist[i][j] == INF)
+cout << "INF"
+<< " ";
+else
+cout << dist[i][j] << " ";
+}
+cout << endl;
+}
+}
+
+int main()
+{
+
+int graph[V][V] = { { 0, 5, INF, 10 },
+{ INF, 0, 3, INF },
+{ INF, INF, 0, 1 },
+{ INF, INF, INF, 0 } };
+
+
+floydWarshall(graph);
+return 0;
+}
+
+
+
+
+
+subset partition sum equal
+
+
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+bool isSubsetSum(int arr[], int n, int sum)
+{
+
+if (sum == 0)
+return true;
+if (n == 0 && sum != 0)
+return false;
+
+if (arr[n - 1] > sum)
+return isSubsetSum(arr, n - 1, sum);
+
+
+return isSubsetSum(arr, n - 1, sum)
+|| isSubsetSum(arr, n - 1, sum - arr[n - 1]);
+}
+
+bool findPartiion(int arr[], int n)
+{
+
+int sum = 0;
+for (int i = 0; i < n; i++)
+sum += arr[i];
+
+
+if (sum % 2 != 0)
+return false;
+
+
+return isSubsetSum(arr, n, sum / 2);
+}
+
+
+int main()
+{
+int arr[] = { 3, 1, 5, 9, 12 };
+int n = sizeof(arr) / sizeof(arr[0]);
+
+// Function call
+if (findPartiion(arr, n) == true)
+cout << "Can be divided into two subsets "
+"of equal sum";
+else
+cout << "Can not be divided into two subsets"
+" of equal sum";
+return 0;
+}
+
+
+
+
+
+traveling sales man returns to the starting point
+
+
+
+#include <iostream>
+
+using namespace std;
+
+
+const int n = 4;
+
+const int MAX = 1000000;
+
+
+int dist[n + 1][n + 1] = {
+{ 0, 0, 0, 0, 0 }, { 0, 0, 10, 15, 20 },
+{ 0, 10, 0, 25, 25 }, { 0, 15, 25, 0, 30 },
+{ 0, 20, 25, 30, 0 },
+};
+
+int memo[n + 1][1 << (n + 1)];
+
+int fun(int i, int mask)
+{
+
+if (mask == ((1 << i) | 3))
+return dist[1][i];
+
+if (memo[i][mask] != 0)
+return memo[i][mask];
+
+int res = MAX;
+
+for (int j = 1; j <= n; j++)
+if ((mask & (1 << j)) && j != i && j != 1)
+res = std::min(res, fun(j, mask & (~(1 << i)))
++ dist[j][i]);
+return memo[i][mask] = res;
+}
+
+int main()
+{
+int ans = MAX;
+for (int i = 1; i <= n; i++)
+
+ans = std::min(ans, fun(i, (1 << (n + 1)) - 1)
++ dist[i][1]);
+
+printf("The cost of most efficient tour = %d", ans);
+
+return 0;
+}
+
+
+
+
+Longest Common Increasing Subsequence
+
+
+
+#include<bits/stdc++.h>
+using namespace std;
+
+
+int LCIS(int arr1[], int n, int arr2[], int m)
+{
+	
+	int table[m];
+	for (int j=0; j<m; j++)
+		table[j] = 0;
+
+
+	for (int i=0; i<n; i++)
+	{
+		
+		int current = 0;
+
+	
+		for (int j=0; j<m; j++)
+		{
+		
+			if (arr1[i] == arr2[j])
+				if (current + 1 > table[j])
+					table[j] = current + 1;
+
+
+			if (arr1[i] > arr2[j])
+				if (table[j] > current)
+					current = table[j];
+		}
+	}
+
+
+	int result = 0;
+	for (int i=0; i<m; i++)
+		if (table[i] > result)
+		result = table[i];
+
+	return result;
+}
+
+int main()
+{
+	int arr1[] = {3, 4, 9, 1};
+	int arr2[] = {5, 3, 8, 9, 10, 2, 1};
+
+	int n = sizeof(arr1)/sizeof(arr1[0]);
+	int m = sizeof(arr2)/sizeof(arr2[0]);
+
+	cout << "Length of LCIS is "
+		<< LCIS(arr1, n, arr2, m);
+	return (0);
+}
+
+
+
+
+	dijkstra algorithm
+
+
+
+#include <iostream>
+using namespace std;
+#include <limits.h>
+
+
+#define V 9
+
+
+int minDistance(int dist[], bool sptSet[])
+{
+
+
+	int min = INT_MAX, min_index;
+
+	for (int v = 0; v < V; v++)
+		if (sptSet[v] == false && dist[v] <= min)
+			min = dist[v], min_index = v;
+
+	return min_index;
+}
+
+void printSolution(int dist[])
+{
+	cout << "Vertex \t Distance from Source" << endl;
+	for (int i = 0; i < V; i++)
+		cout << i << " \t\t\t\t" << dist[i] << endl;
+}
+
+
+void dijkstra(int graph[V][V], int src)
+{
+	int dist[V]; 
+
+	bool sptSet[V]; 
+	for (int i = 0; i < V; i++)
+		dist[i] = INT_MAX, sptSet[i] = false;
+
+
+	dist[src] = 0;
+
+
+	for (int count = 0; count < V - 1; count++) {
+
+		int u = minDistance(dist, sptSet);
+
+
+		sptSet[u] = true;
+
+
+		for (int v = 0; v < V; v++)
+
+	
+			if (!sptSet[v] && graph[u][v]
+				&& dist[u] != INT_MAX
+				&& dist[u] + graph[u][v] < dist[v])
+				dist[v] = dist[u] + graph[u][v];
+	}
+
+
+	printSolution(dist);
+}
+
+
+int main()
+{
+
+
+	int graph[V][V] = { { 0, 4, 0, 0, 0, 0, 0, 8, 0 },
+						{ 4, 0, 8, 0, 0, 0, 0, 11, 0 },
+						{ 0, 8, 0, 7, 0, 4, 0, 0, 2 },
+						{ 0, 0, 7, 0, 9, 14, 0, 0, 0 },
+						{ 0, 0, 0, 9, 0, 10, 0, 0, 0 },
+						{ 0, 0, 4, 14, 10, 0, 2, 0, 0 },
+						{ 0, 0, 0, 0, 0, 2, 0, 1, 6 },
+						{ 8, 11, 0, 0, 0, 0, 1, 0, 7 },
+						{ 0, 0, 2, 0, 0, 0, 6, 7, 0 } };
+
+
+	dijkstra(graph, 0);
+
+	return 0;
+}
+
+
+
